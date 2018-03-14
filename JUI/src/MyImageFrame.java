@@ -1,13 +1,9 @@
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.event.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.*;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -21,9 +17,9 @@ import javax.swing.*;
  *       2. 우주선에서 쏘아지는 미사일을 구현한다.
  *       3. 미사일을 ArrayList를 이용해 동적으로 구현하고 여러발을 쏘아대는것을 구현한다.
  *       4. 벽에닿으면 사라지는 미사일을 구현한다.
- *       5.Sprite로 공통된 필드와 메소드를정리한다.
+ *       5. Sprite로 공통된 필드와 메소드를정리한다.
  *       
- *       
+ *       ArrayList로 Missile은 어떻게 구현될까?
 */
 
 //공통된 필드와메소드를 모아두는 클래스를 구현 합니다.
@@ -48,8 +44,10 @@ class Sprite{
 //우주선의 정보를 담은 클래스 생성합니다.
 class Spaceship extends Sprite{
 	//미사일크래스의 필드 m을 선언합니다.
-	Missile m=null;
-	
+	//Missile m=null;
+	//Missile타입의 ArrayList를 선언해줍니다.
+	ArrayList <Missile> m = new ArrayList<Missile>();
+
 	//우주선을구현하는 클래스의생성자를 구현합니다.
 	public Spaceship()
 	{
