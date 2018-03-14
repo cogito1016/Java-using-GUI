@@ -25,13 +25,25 @@ import javax.swing.*;
  *       
 */
 
+class Sprite{
+	public int dx;
+	public int dy;
+	public int x;
+	public int y;
+	public BufferedImage image;
+	
+	public int getX() {return x;}
+	
+	public int getY() {return y;}
+	
+	public Image getImage(){return image;}
+	
+}
+
+
 //우주선의 정보를 담은 클래스 생성
-class Spaceship{
-	private int dx;
-	private int dy;
-	private int x;
-	private int y;
-	private BufferedImage image;
+class Spaceship extends Sprite{
+
 	
 	Missile m=null;
 	
@@ -52,57 +64,39 @@ class Spaceship{
 		m=new Missile(x,y);
 	}
 	
-	public Missile getMissile()
-	{
-		return m;
-	}
-	public Image getImage()
-	{
-		return image;
-	}
+	public Missile getMissile() {return m;}
+
 	
 	public void move()
 	{
 		x+=dx;
 		y+=dy;
 	}
-	
-	public int getX() {
-		return x;
-	}
-	
-	public int getY() {
-		return y;
-	}
-	
+
 	public void keyPressed(KeyEvent e)
 	{
-		int key=e.getKeyCode();
-		if(key==KeyEvent.VK_LEFT){
-			dx=-1;
-		}		if(key==KeyEvent.VK_RIGHT){
-			dx=1;
-		}		if(key==KeyEvent.VK_UP){
-			dy=-1;
-		}		if(key==KeyEvent.VK_DOWN){
-			dy=1;
-		}		if(key==KeyEvent.VK_SPACE){
-			fire();
+		int keycode=e.getKeyCode();
+		switch(keycode)
+		{
+		case KeyEvent.VK_LEFT: dx=-1; break;		
+		case KeyEvent.VK_RIGHT: dx=1; break;			
+		case KeyEvent.VK_UP: dy=-1; break;			
+		case KeyEvent.VK_DOWN: dy=1; break;		
+		case KeyEvent.VK_SPACE: fire(); break;
 		}
 	
 	}
 	
 	public void keyReleased(KeyEvent e)
 	{
-		int key=e.getKeyCode();
-		if(key==KeyEvent.VK_LEFT){
-			dx=0;
-		}		if(key==KeyEvent.VK_RIGHT){
-			dx=0;
-		}		if(key==KeyEvent.VK_UP){
-			dy=0;
-		}		if(key==KeyEvent.VK_DOWN){
-			dy=0;
+		int keycode=e.getKeyCode();
+		
+		switch(keycode)
+		{
+		case KeyEvent.VK_LEFT: dx=0; break;		
+		case KeyEvent.VK_RIGHT: dx=0; break;			
+		case KeyEvent.VK_UP: dy=0; break;			
+		case KeyEvent.VK_DOWN: dy=0; break;
 		}
 	}
 }
@@ -145,9 +139,9 @@ class Board extends JPanel implements ActionListener, KeyListener
 	public Dimension getPreferredSize() {
 		if(image==null) {
 			return new Dimension(100,100);
-		}else {
-			return new Dimension(WIDTH,HEIGHT);
-		}
+			}else {
+				return new Dimension(WIDTH,HEIGHT);
+				}
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -159,6 +153,7 @@ class Board extends JPanel implements ActionListener, KeyListener
 			g2d.drawImage(ship.getMissile().getImage(),ship.getMissile().getX(),ship.getMissile().getY(),this);
 		Toolkit.getDefaultToolkit().sync();
 		}
+	
 	public void actionPerformed(ActionEvent e) {
 		ship.move();
 		if(ship.getMissile() !=null)
@@ -166,22 +161,14 @@ class Board extends JPanel implements ActionListener, KeyListener
 		repaint();
 	}
 	
-	public void keyPressed(KeyEvent e) {
-		ship.keyPressed(e);
-	}
-	public void keyReleased(KeyEvent e) {
-		ship.keyReleased(e);
-	}
-	public void keyTyped(KeyEvent arg0)
-	{}
-	
+	public void keyPressed(KeyEvent e) {ship.keyPressed(e);}
+	public void keyReleased(KeyEvent e) {ship.keyReleased(e);}
+	public void keyTyped(KeyEvent arg0){}
 }
 
-class Missile{
+class Missile extends Sprite{
 
-	int x,y;
-	int dx =1, dy=1;
-	private BufferedImage image;
+
 	
 	private final int MISSILE_SPEED = 2;	
 	boolean visible=true;
@@ -192,6 +179,9 @@ class Missile{
 	    }catch (IOException e) {
 	     e.printStackTrace();
 	    }
+	    dx=1;
+	    dy=1;
+	    
 		this.x=x;
 		this.y=y;
 	}
@@ -203,19 +193,7 @@ class Missile{
 			visible=false;
 		}
 	}
-	public int getX() {
-		return x;
-	}
-	
-	public int getY()
-	{
-		return y;
-	}
-	
-	public Image getImage()
-	{
-		return image;
-	}
+
 }
 public class MyImageFrame extends JFrame
 {
