@@ -56,7 +56,7 @@ class Spaceship extends Sprite{
 	//미사일객체m을 null값으로 선언하여 이값을갖는것을 ArrayList에 추가하는걸로 구조를잡아본다.
 	Missile m=null;
 	//인덱스를선언합시다.
-	private final int INDEX=10;
+	private final int INDEX=0;
 	
 	
 	//우주선을구현하는 클래스의생성자를 구현합니다.
@@ -72,10 +72,8 @@ class Spaceship extends Sprite{
 	    //이것은 초기 우주선의 위치값을 설정한 것 입니다.
 		x=500;
 		y=400;
+		
 	}
-	
-	/*상수 INDEX의 값을 반환하는 접근자를 선언합니.*/
-	public int getIndex() {return INDEX;}
 	
 	/*미사일을 발사하는 메소드 fire입니다.
 	 *이를통해 선언해준 미사일클래스필드 m에 우주선의 x,y값을 인수로받은
@@ -89,19 +87,36 @@ class Spaceship extends Sprite{
 	public void fire(){
 		m=new Missile(x,y);
 		mlist.add(m);
-		m=null;
+		System.out.println("현재 리스트의크"+mlist.size());
 		}
 	
 	/*Application ArrayList Part
 	 * 미사일의 정보를 반환하는 getMissile()메소드입니다.
 	 * 평소에는 객체하나 'm'밖에없어서 그것만 반환하였었지만
-	 * 이제는 ArrayList이니 리스트안에있는 첫번째요소의 값을반환하는걸로 메소드를 수정해줄 것 입니다.*/
-	public Missile getMissile() {return mlist.get(0);}
+	 * 이제는 ArrayList이니 리스트안에있는 첫번째요소의 값을반환하는걸로 메소드를 수정해줄 것 입니다.
+	 * If문에대한설명
+	 * 		If문은 mlist에 m이라는객체가 있는지 없는지를 식별합니다.
+	 * 		mlist에 객체m이 없는상태인데 객체를 반환할수는없기때문입니다.
+	 * 		이부분을 간과하여 오류수십개가뜨는것을 겪었고 즉시 개선하였습니다.*/
+	
+	public Missile getMissile() {
+		if(mlist.size()>0)
+				return mlist.get(INDEX);
+		else
+			return null;
+		}
 	
 	/*Application ArrayList Part
 	 *미사일객체가 y값을넘어가면없어져야합니다.
-	 *이는 미사일타입의 어레이리스트인 mlist에서 객체를 삭제해주는것으로 동작을구현합니다.*/
-	public void rmMisobj() {mlist.remove(0);}
+	 *이는 미사일타입의 어레이리스트인 mlist에서 객체를 삭제해주는것으로 동작을구현합니다.
+	 * If문에대한설명
+	 * 		If문은 mlist에 m이라는객체가 있는지 없는지를 식별합니다.
+	 * 		mlist에 객체m이 없는상태인데 객체를 반환할수는없기때문입니다.
+	 * 		이부분을 간과하여 오류수십개가뜨는것을 겪었고 즉시 개선하였습니다.*/
+	public void rmMisobj() {
+		if(mlist.size()>0)
+			mlist.remove(INDEX);
+	}
 	
 	//움직임을 표현한 메소드 move입니다.
 	public void move()
@@ -204,7 +219,6 @@ class SpaceBack extends JPanel implements ActionListener, KeyListener
 		super.paintComponent(g);
 		//0,0위치에 image를 그립니다 여기서 image란 배경화면을 뜻합니다.
 		g.drawImage(image, 0, 0, this);
-		//		
 		Graphics2D g2d = (Graphics2D) g;
 		//우주선의 이미지를 우주선의현재위치(x,y)값에 그려줍니다.
 		g2d.drawImage(ship.getImage(), ship.getX(),ship.getY(),this);
@@ -212,7 +226,12 @@ class SpaceBack extends JPanel implements ActionListener, KeyListener
 		 *따라서 getmisile()의 값은 null이 아닌, 우주선의 현재위치(x,y)값이있는 객체를 의미합니다.
 		 *그렇기때문에 미사일을그리기위한 목적의 drawImage메소드에는
 		 *우주선에있는 미사일의 이미지, 우주선에있는 미사일의 위치(x,y)가 입력받아지고 그대로 그리면 됩니다.*/
-		if(ship.getMissile() !=null)
+		//if(ship.getMissile() !=null)
+			//g2d.drawImage(ship.getMissile().getImage(),ship.getMissile().getX(),ship.getMissile().getY(),this);
+		
+		/*Application ArrayList Part
+		 *조건문을수정합니다. missile의값을보는게아닌 mlist의 크기로 판단을합니다..*/
+		if(ship.mlist.size()>0)
 			g2d.drawImage(ship.getMissile().getImage(),ship.getMissile().getX(),ship.getMissile().getY(),this);
 		Toolkit.getDefaultToolkit().sync();
 		}
@@ -223,7 +242,10 @@ class SpaceBack extends JPanel implements ActionListener, KeyListener
 		ship.move();
 		/*만약 미사일의 값이 null이 아니면(이는 181~184라인에입력한 주석의내용과 일치합니다.)
 		 *우주선에있는 미사일을 움직이는 메소드를 호출합니다. 미사일이 나타난다는것이겠죠!*/
-		if(ship.getMissile() !=null)
+		
+		/*Application ArrayList Part
+		 *조건문을수정합니다. missile의값을보는게아닌 mlist의 크기로 판단을합니다..*/
+		if(ship.mlist.size()>0)
 			ship.getMissile().move();
 
 		//계속하여 다시 그려줍니다.
@@ -274,8 +296,8 @@ class Missile extends Sprite{
 		if(y<0){
 			visible=false;
 			/*Application ArrayList Part
-			 *y의값을넘어가면 mlist의 객체 list를 삭제합니*/
-			ship.rmMisobj();
+			 *y의값을넘어가면 mlist의 객체 list를 삭제합니다.*/
+			//ship.rmMisobj();
 			}
 	}
 }
