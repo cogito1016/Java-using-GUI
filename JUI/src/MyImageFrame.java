@@ -43,16 +43,26 @@ class Sprite{
 }
 
 
+
 //우주선의 정보를 담은 클래스 생성합니다.
 class Spaceship extends Sprite{
 	//미사일크래스의 필드 m을 선언합니다.
 	//Missile m=null;
-	//Missile타입의 ArrayList를 선언해줍니다.
-	ArrayList <Missile> m = new ArrayList<Missile>();
-
+	
+	
+	/*Application ArrayList Part
+	 * Missile타입의 ArrayList를 선언해줍니다.*/
+	ArrayList <Missile> mlist = new ArrayList<Missile>();
+	//미사일객체m을 null값으로 선언하여 이값을갖는것을 ArrayList에 추가하는걸로 구조를잡아본다.
+	Missile m=null;
+	//인덱스를선언합시다.
+	private final int INDEX=10;
+	
+	
 	//우주선을구현하는 클래스의생성자를 구현합니다.
 	public Spaceship()
 	{
+		
 		//생성자에서는 우주선의 이미지를 설정하고 예외처리로 종료하게끔 만듭니다.
 	     try {
 	        image = ImageIO.read(new File("SpaceShip.png"));
@@ -64,15 +74,35 @@ class Spaceship extends Sprite{
 		y=400;
 	}
 	
+	/*상수 INDEX의 값을 반환하는 접근자를 선언합니.*/
+	public int getIndex() {return INDEX;}
+	
 	/*미사일을 발사하는 메소드 fire입니다.
 	 *이를통해 선언해준 미사일클래스필드 m에 우주선의 x,y값을 인수로받은
 	 *미사일객체 하나를 넣어줍니다.
 	 *그럼 미사일필드m은 더이상 null이 아닌 x,y값을갖는 객체가 되겠죠?*/
-	public void fire(){m=new Missile(x,y);}
+	//public void fire(){m= new Missile(x,y);}
 	
-	//미사일의 정보를 반환하는 메소드입니다.
-	public Missile getMissile() {return m;}
-
+	/*Application ArrayList Part
+	 * fire()을 호출시 현재 우주선의 x,y값을 받는 Missile객체를 널값이였던 m에 넣어줍니다..
+	 * 그리고 그 객체 m 을 미사일타입의 어레이리스트인 mlist에 add시켜줍니다.*/
+	public void fire(){
+		m=new Missile(x,y);
+		mlist.add(m);
+		m=null;
+		}
+	
+	/*Application ArrayList Part
+	 * 미사일의 정보를 반환하는 getMissile()메소드입니다.
+	 * 평소에는 객체하나 'm'밖에없어서 그것만 반환하였었지만
+	 * 이제는 ArrayList이니 리스트안에있는 첫번째요소의 값을반환하는걸로 메소드를 수정해줄 것 입니다.*/
+	public Missile getMissile() {return mlist.get(0);}
+	
+	/*Application ArrayList Part
+	 *미사일객체가 y값을넘어가면없어져야합니다.
+	 *이는 미사일타입의 어레이리스트인 mlist에서 객체를 삭제해주는것으로 동작을구현합니다.*/
+	public void rmMisobj() {mlist.remove(0);}
+	
 	//움직임을 표현한 메소드 move입니다.
 	public void move()
 	{
@@ -215,7 +245,11 @@ class Missile extends Sprite{
 	private final int MISSILE_SPEED = 2;
 	//visible의값을 넣는 필드를 선언합니다. (불리언 타입입니다)	
 	boolean visible=true;
-
+	
+	/*Application ArrayList Part
+	 * 객체가 화면을벗어나면 삭제되느것을 구현하기위한 spaceship메소드를사용하기위해 spaceship변수 ship을 선언합니다.*/
+	private Spaceship ship;
+	
 	//미사일클래스의 생성자를 선언합니다 미사일클래스는 매개변수 x와y를 받습니다.
 	public Missile(int x, int y)
 	{
@@ -237,7 +271,12 @@ class Missile extends Sprite{
 		 *쭉쭉올라가서 이제 미사일이 화면끝까지 올라가면 더이상 그릴필요가없습니다.
 		 *따라서 안보이게 visible=false시킵니다.*/
 		y-=MISSILE_SPEED;		
-		if(y<0){visible=false;}
+		if(y<0){
+			visible=false;
+			/*Application ArrayList Part
+			 *y의값을넘어가면 mlist의 객체 list를 삭제합니*/
+			ship.rmMisobj();
+			}
 	}
 }
 
