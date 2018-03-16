@@ -4,7 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.Timer;
@@ -54,7 +53,7 @@ class Spaceship extends Sprite{
 	 * Missile타입의 ArrayList를 선언해줍니다.*/
 	ArrayList <Missile> mlist = new ArrayList<Missile>();
 	//미사일객체m을 null값으로 선언하여 이값을갖는것을 ArrayList에 추가하는걸로 구조를잡아본다.
-	Missile m=null;
+	//Missile m=null;
 	//인덱스를선언합시다.
 	private final int INDEX=0;
 	
@@ -85,9 +84,14 @@ class Spaceship extends Sprite{
 	 * fire()을 호출시 현재 우주선의 x,y값을 받는 Missile객체를 널값이였던 m에 넣어줍니다..
 	 * 그리고 그 객체 m 을 미사일타입의 어레이리스트인 mlist에 add시켜줍니다.*/
 	public void fire(){
+		Missile m;
 		m=new Missile(x,y);
 		mlist.add(m);
-		System.out.println("현재 리스트의크"+mlist.size());
+		
+		System.out.println("현재 리스트의크기 "+mlist.size());
+		for(int j=0;j<mlist.size();j++)
+			System.out.println("객체"+mlist.get(j)+"해당 객체의 위치좌표 = "+mlist.get(j).x+" "+mlist.get(j).y);
+		
 		}
 	
 	/*Application ArrayList Part
@@ -101,7 +105,7 @@ class Spaceship extends Sprite{
 	
 	public Missile getMissile() {
 		if(mlist.size()>0)
-				return mlist.get(INDEX);
+				return mlist.get(mlist.size()-1);
 		else
 			return null;
 		}
@@ -222,6 +226,8 @@ class SpaceBack extends JPanel implements ActionListener, KeyListener
 		Graphics2D g2d = (Graphics2D) g;
 		//우주선의 이미지를 우주선의현재위치(x,y)값에 그려줍니다.
 		g2d.drawImage(ship.getImage(), ship.getX(),ship.getY(),this);
+		
+		
 		/*만약에 미사일의값이 null이아니면 => 이 뜻은 우주선에서 미사일을 Fire()시켰다는 의미이먀
 		 *따라서 getmisile()의 값은 null이 아닌, 우주선의 현재위치(x,y)값이있는 객체를 의미합니다.
 		 *그렇기때문에 미사일을그리기위한 목적의 drawImage메소드에는
@@ -232,12 +238,16 @@ class SpaceBack extends JPanel implements ActionListener, KeyListener
 		/*Application ArrayList Part
 		 *조건문을수정합니다. missile의값을보는게아닌 mlist의 크기로 판단을합니다..*/
 		if(ship.mlist.size()>0)
-			g2d.drawImage(ship.getMissile().getImage(),ship.getMissile().getX(),ship.getMissile().getY(),this);
+		{
+			for(Missile m : ship.mlist)
+				g2d.drawImage(m.getImage(),m.getX(),m.getY(),this);
+		}
+		
 		Toolkit.getDefaultToolkit().sync();
 		}
 	
 	//이는 액션이벤트를 처리하는 메소드입니다.
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e) {  
 		//우주선을움직이는 메소드를 호출합니다.
 		ship.move();
 		/*만약 미사일의 값이 null이 아니면(이는 181~184라인에입력한 주석의내용과 일치합니다.)
@@ -245,9 +255,13 @@ class SpaceBack extends JPanel implements ActionListener, KeyListener
 		
 		/*Application ArrayList Part
 		 *조건문을수정합니다. missile의값을보는게아닌 mlist의 크기로 판단을합니다..*/
+		//if(ship.mlist.size()>0)
+			//ship.getMissile().move();
 		if(ship.mlist.size()>0)
-			ship.getMissile().move();
-
+		{
+			for(Missile m : ship.mlist)
+				m.move();
+		}
 		//계속하여 다시 그려줍니다.
 		repaint();
 	}
@@ -265,7 +279,9 @@ class SpaceBack extends JPanel implements ActionListener, KeyListener
 class Missile extends Sprite{
 	//미사일스피드를 정하는 필드를 선언합니다 초기값은 2입니다.
 	private final int MISSILE_SPEED = 2;
+	
 	//visible의값을 넣는 필드를 선언합니다. (불리언 타입입니다)	
+	//필요없는 코드가 아닌가...
 	boolean visible=true;
 	
 	/*Application ArrayList Part
@@ -294,10 +310,12 @@ class Missile extends Sprite{
 		 *따라서 안보이게 visible=false시킵니다.*/
 		y-=MISSILE_SPEED;		
 		if(y<0){
-			visible=false;
+			//필요없는 코드가 아닌가..
+			//visible=false;
+			
 			/*Application ArrayList Part
 			 *y의값을넘어가면 mlist의 객체 list를 삭제합니다.*/
-			//ship.rmMisobj();
+			ship.rmMisobj();
 			}
 	}
 }
