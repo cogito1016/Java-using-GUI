@@ -20,7 +20,7 @@ import javax.swing.Timer;
 public class SpaceBack extends JPanel implements ActionListener, KeyListener
 {
 	/*배경이미지를위한 이미지필드인 image를 선언하고 
-	 *딜레이를위한 타이머 필드, 그리고 우주선필드, 그리고 딜레이읟값을 넣은 DELAY필드를 선언해줍니다.*/
+	 *딜레이를위한 타이머 필드, 그리고 우주선필드, 그리고 딜레이의값을 넣은 DELAY필드를 선언해줍니다.*/
 	private BufferedImage image;
 	private Timer timer;
 	private Spaceship ship;
@@ -43,7 +43,7 @@ public class SpaceBack extends JPanel implements ActionListener, KeyListener
 	         e.printStackTrace();
 	      }
 
-	     //WIDThdㅘ HEIGHT는 읽은 배경화면이미지의 가로 높이의 값을 받습니다.
+	    //WIDTh와 HEIGHT는 읽은 배경화면이미지의 가로 높이의 값을 받습니다.
 	    WIDTH = image.getWidth(null);
 	    HEIGHT = image.getHeight(null);
 		
@@ -76,39 +76,26 @@ public class SpaceBack extends JPanel implements ActionListener, KeyListener
 		//우주선의 이미지를 우주선의현재위치(x,y)값에 그려줍니다.
 		g2d.drawImage(ship.getImage(), ship.getX(),ship.getY(),this);
 		
-		
-		/*만약에 미사일의값이 null이아니면 => 이 뜻은 우주선에서 미사일을 Fire()시켰다는 의미이먀
-		 *따라서 getmisile()의 값은 null이 아닌, 우주선의 현재위치(x,y)값이있는 객체를 의미합니다.
-		 *그렇기때문에 미사일을그리기위한 목적의 drawImage메소드에는
-		 *우주선에있는 미사일의 이미지, 우주선에있는 미사일의 위치(x,y)가 입력받아지고 그대로 그리면 됩니다.*/
-		//if(ship.getMissile() !=null)
-			//g2d.drawImage(ship.getMissile().getImage(),ship.getMissile().getX(),ship.getMissile().getY(),this);
-		
 		/*Application ArrayList Part
-		 *조건문을수정합니다. missile의값을보는게아닌 mlist의 크기로 판단을합니다..*/
+		 *만약에 미사일의값이 null이아니면 => 이 뜻은 우주선에서 미사일을 Fire()시켰다는 의미이며
+		 *따라서 getmisile()의 값은 null이 아닌, 우주선의 현재위치(x,y)값이있는 객체를 의미합니다
+		 *또, ship.mlist.size()>0은 => 리스트가 0보다 크다는 의미이고, missile을 담을
+		 *ArrayList에 미사일객체가 하나라도 있다는것을 의미합니다.
+		 *조건 두개를 AND연산시켜 혹시모를 충돌을 최대한 피해갔습니다.*/
 		if(ship.getMissile() != null && ship.mlist.size()>0)
 		{
-			/*
-			for(Missile m : ship.mlist){
-				if(m.y>0)
-				{
-					g2d.drawImage(m.getImage(),m.getX(),m.getY(),this);
-				}else
-					ship.rmMisobj();
-			}*/
 			/*Application ArrayList Part
-			 *오류나는 for-each삭제하고 일반 for문으로 표현해봅시다..*/
+			 *오류나는 for-each삭제하고 일반 for문으로 표현해보았습니다.
+			 *Missile타입의 m필드를 선언하고 이곳에는 arraylist mlist에 들어있는 객체를 넣고,
+			 *만약 그 미사일객체의 y값이 0보다 크다면 화면에 그려줍니다.
+			 *y가 0보다 크다는것은 화면에 있다는 표시입나다. 더 올라갈 이유가 있는것이지요.*/
 			for(int i=0; i<ship.mlist.size();i++)
 			{
 				Missile m = ship.mlist.get(i);
 				if(m.y>0)
 				{g2d.drawImage(m.getImage(),m.getX(),m.getY(),this);}
 			}
-			
-			
-			
 		}
-		
 		Toolkit.getDefaultToolkit().sync();
 		}
 	
@@ -116,27 +103,25 @@ public class SpaceBack extends JPanel implements ActionListener, KeyListener
 	public void actionPerformed(ActionEvent e) {  
 		//우주선을움직이는 메소드를 호출합니다.
 		ship.move();
-		/*만약 미사일의 값이 null이 아니면(이는 181~184라인에입력한 주석의내용과 일치합니다.)
-		 *우주선에있는 미사일을 움직이는 메소드를 호출합니다. 미사일이 나타난다는것이겠죠!*/
 		
 		/*Application ArrayList Part
-		 *조건문을수정합니다. missile의값을보는게아닌 mlist의 크기로 판단을합니다..*/
-		//if(ship.mlist.size()>0)
-			//ship.getMissile().move();
+		 *만약에 미사일의값이 null이아니면 => 이 뜻은 우주선에서 미사일을 Fire()시켰다는 의미이며
+		 *따라서 getmisile()의 값은 null이 아닌, 우주선의 현재위치(x,y)값이있는 객체를 의미합니다
+		 *또, ship.mlist.size()>0은 => 리스트가 0보다 크다는 의미이고, missile을 담을
+		 *ArrayList에 미사일객체가 하나라도 있다는것을 의미합니다.
+		 *조건 두개를 AND연산시켜 혹시모를 충돌을 최대한 피해갔습니다.*/
 		if(ship.getMissile() != null && ship.mlist.size()>0)
 		{
-			/*
-			for(Missile m : ship.mlist){
-				
-				//if(m.y<0)
-					//ship.rmMisobj();
-				//else 
-				if(m.y>0)
-					m.move();
-			}*/
+
 			/*Application ArrayList Part
-			 *오류나는 for-each삭제하고 일반 for문으로 표현해봅시다..*/
-			//
+			 *오류나는 for-each삭제하고 일반 for문으로 표현해보았습니다.
+			 *Missile타입의 m필드를 선언하고 이곳에는 arraylist mlist에 들어있는 객체를 넣고,
+			 *만약 그 미사일객체의 y값이 0보다 크다면 그 미사일 객체 m을 움직이게해주는 move메소드를
+			 *호출합니다. 만약에 그 객체의 y값이 0보다 크지않다면?, 즉 y<=0 이라면 
+			 *이객체는 더이상 화면에 표시할 이유가없고 사라져야합니다.
+			 *사라지는것은 mlist에서 이 객체를 삭제하는것으로 구현하였습니다.
+			 *Arraylist mlist에서 이 객체를 삭제하는것으로 메모리도 절약하고 효과적으로
+			 *객체도 지우는 프로그램이되었습니다.*/
 			for(int i=0; i<ship.mlist.size();i++)
 			{
 				Missile m = ship.mlist.get(i);

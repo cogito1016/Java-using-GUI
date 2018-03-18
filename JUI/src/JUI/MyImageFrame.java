@@ -25,10 +25,6 @@ import javax.swing.Timer;
  *       ArrayList로 Missile은 어떻게 구현될까?
 */
 
-
-
-
-
 //이제 프레임을 그려주는 클래스를 구현합니다.
 public class MyImageFrame extends JFrame
 {
